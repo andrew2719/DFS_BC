@@ -2,6 +2,7 @@
 import os
 import time
 
+
 class FolderAlreadyExistsError(Exception):
     def __init__(self, message):
         self.message = message
