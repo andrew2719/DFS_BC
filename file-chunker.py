@@ -3,6 +3,12 @@ import os
 import time
 
 
+class Color:
+    red = '\033[31m'
+    green = '\033[32m'
+    default = '\033[0m'
+
+
 class FolderAlreadyExistsError(Exception):
     def __init__(self, message):
         self.message = message
@@ -29,17 +35,14 @@ class FileChunker:
             else:
                 raise FolderAlreadyExistsError("chunks folder already exists")
         except FolderAlreadyExistsError as e:
-            text = "-----chunks folder already exists-----"
-            red = '\033[31m'
-            default = '\033[0m'
-            print(f"{red}{text}{default}")
+            print(f"{Color.red} -----chunks folder already exists----- {Color.default}")
             # print()
             print("chunks not created.")
             exit(0)
 
         print("Created a directory 'chunks'")
         with open(file_path, "rb") as file:
-            chunk_id = 0
+            chunk_id = 1
             while True:
                 chunk_data = file.read(chunk_size)
                 if not chunk_data:
@@ -48,7 +51,7 @@ class FileChunker:
                 with open(chunk_file_path, "wb") as chunk_file:
                     chunk_file.write(chunk_data)
                 chunk_id += 1
-        print("Chunks created Successfully. You can find them in the 'chunks' folder.")
+        print(f"{Color.green}Chunks created Successfully. You can find them in the 'chunks' folder.{Color.default}")
 
 
 # driver code
