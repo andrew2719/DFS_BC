@@ -1,44 +1,23 @@
 # file chunker
 import os
-import time
-
-
-class Color:
-    red = '\033[31m'
-    green = '\033[32m'
-    default = '\033[0m'
-
-
-class FolderAlreadyExistsError(Exception):
-    def __init__(self, message):
-        self.message = message
-        super().__init__(self.message)
+from color import Color
+from keygen import KeyGen
 
 
 class FileChunker:
-
     def __init__(self):
         self.max_chunks = 5
 
     def calculate_chunk_size(self, file_size):
         return (file_size + self.max_chunks - 1) // self.max_chunks
 
-    def chunk_file(self, file_path):
+    def generate_chunks(self, file_path):
         file_size = os.path.getsize(file_path)
         print(f"Uploaded file size is {file_size} KB")
         chunk_size = self.calculate_chunk_size(file_size)
-        print(f"Dividing the file into 5 chunks....")
-        time.sleep(1)
-        try:
-            if not os.path.exists("chunks"):
-                os.makedirs("chunks")
-            else:
-                raise FolderAlreadyExistsError("chunks folder already exists")
-        except FolderAlreadyExistsError as e:
-            print(f"{Color.red} -----chunks folder already exists----- {Color.default}")
-            # print()
-            print("chunks not created.")
-            exit(0)
+        print(f"Dividing the file into {self.max_chunks} chunks....")
+        if not os.path.exists("chunks"):
+            os.makedirs("chunks")
 
         print("Created a directory 'chunks'")
         with open(file_path, "rb") as file:
@@ -53,7 +32,6 @@ class FileChunker:
                 chunk_id += 1
         print(f"{Color.green}Chunks created Successfully. You can find them in the 'chunks' folder.{Color.default}")
 
-
-# driver code
-chunker = FileChunker()
-chunker.chunk_file("text-file.txt")
+# # driver code
+# chunker = FileChunker()
+# chunker.generate_chunks("pdf-file.pdf")
