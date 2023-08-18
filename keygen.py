@@ -6,8 +6,13 @@ class KeyGen:
         self.data = None
 
     def generate_key(self, data):
-        self.data = data
+        self.data = data.encode()
         hasher = hashlib.sha256(self.data)
-        hexer = hasher.hexdigest()
-        key = bytes.fromhex(hexer)
+        key = hasher.hexdigest()
+        # print(key)
         return key
+
+
+# # driver code
+# keygen = KeyGen()
+# keygen.generate_key("Hello World")

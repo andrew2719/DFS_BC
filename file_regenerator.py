@@ -4,9 +4,9 @@ from color import Color
 
 
 class FileRegenerator:
-    def __init__(self):
+    def __init__(self, folder_path):
         if os.path.exists("chunks"):
-            self.chunk_folder = 'chunks'
+            self.chunk_folder = folder_path
 
     def regenerate_file(self, output_file):
         print("regenerating the files using chunks...")
@@ -23,7 +23,7 @@ class FileRegenerator:
         print(f"{Color.green}file regenerated successfully. You can find '{output_file}'{Color.default}")
 
 
-# driver code
-
-regenerator = FileRegenerator()
-regenerator.regenerate_file('regenerated.pdf')
+# # driver code
+#
+# regenerator = FileRegenerator()
+# regenerator.regenerate_file('regenerated.pdf')
