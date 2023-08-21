@@ -25,7 +25,7 @@ async def tcp_echo_client(message):
         print('Connection failed')
 
 message = {
-    "type": "upload",
+    "type": "self-upload",
     "file_name": "test.txt",
     "file": "hello world"
 }

@@ -4,7 +4,7 @@ from Handler import HandleSelf, HandleIncoming
 from Messages import *
 
 # get the ip of the system
-SYSTEM_IP  = socket.gethostbyname(socket.gethostname())
+SYSTEM_IP = socket.gethostbyname(socket.gethostname())
 
 class Server:
     def __init__(self):
@@ -13,11 +13,12 @@ class Server:
     async def handle_echo(self, reader, writer):
         addr = writer.get_extra_info('peername')
         print(f"Received connection from {addr}")
+        data = await reader.read(4096)
+        dict_data = await Converter(data.decode()).json_to_dict()
+        print(dict_data)
 
-        if addr[0] == 'SYSTEM_IP':
-            data = await reader.read(4096)
-            # print(data.decode())
-            dict_data = await Converter(data.decode()).json_to_dict()
+        # self-X represents the client function of the same system
+        if dict_data['type'] == 'self-upload':
 
             #creating a handler object that can send the data to the handler
             # the handler will handle the request and return the response
@@ -25,14 +26,17 @@ class Server:
 
             handler = HandleSelf(dict_data,reader,writer)
             response = await handler.handle()
-            print(response)
+            print(response,"from server")
 
             writer.write("responses generated".encode())
             await writer.drain()
 
-        else:
-            # the incoming requests like outside requesting from the other nodes/servers
-            pass
+        elif dict_data['type'] == 'server-upload':
+            # data = await reader.read(4096)
+            print(data.decode())
+            writer.write("back reply".encode())
+            await writer.drain()
+
 
         writer.close()
 

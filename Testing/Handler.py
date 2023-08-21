@@ -1,5 +1,6 @@
 import asyncio
-PEERS = ['192.168.159.77']
+from Messages import *
+PEERS = ['localhost']
 
 class HandleSelf:
     def __init__(self,data,reader,writer):
@@ -7,25 +8,33 @@ class HandleSelf:
         self.reader = reader
         self.writer = writer
     async def handle(self):
-        if self.data['type'] == 'upload':
+        if self.data['type'] == 'self-upload':
             return await self.handle_upload()
         elif self.data['type'] == 'download':
             return await self.handle_download()
         else:
             return 'invalid request'
 
-    async def send_file(self,peer,chunking):
+    async def send_file(self,peer,message):
         reader, writer = await asyncio.open_connection(peer, 8888)
-        writer.write(chunking)
+        print(f'Connected to {writer.get_extra_info("peername")}')
+        writer.write(message.encode())
         await writer.drain()
         response = await reader.read(1024)
+        # print(f'Received: {response.decode()!r}')
         writer.close()
-        print(response.decode())
+        print(response.decode(), "from handler")
         return response.decode()
 
     # if user want to upload the file
     async def handle_upload(self):
-        pass
+
+        data = {
+            'type':'server-upload'
+        }
+        data = json.dumps(data)
+        print(self.data, 'inside_handle_upload')
+        return await self.send_file(PEERS[0],data)
         # Chunking the file
         # send the chunking to the other peers
         # wait for their response
