@@ -1,0 +1,73 @@
+Json formats:
+
+Requests to the server from the client:
+
+    Uploading : {
+        type : 'upload-file',
+        file : file_data,
+        from : node_data,
+    }
+
+    Downloading : {
+        type : 'download-file',
+        file_meta : file_meta_data,
+    }
+
+Requests from server to server:
+
+       Uploading : {
+            type : 'uploading-file',
+            file : file_data,
+            from : node_data,
+       }
+
+       Downloading : {
+            type : 'get-file',
+            file_meta : file_meta_data,
+       }
+
+
+User/ node stores the data using a hash for identification of the file for downloading later
+
+example :
+
+file = file1.txt
+this file is chunked to 10 chunks
+each chunk will have different hash and their index
+this is necessary in the node when a node need to access the data from the network
+
+data_chunk = {
+    index : 1,                  this will be sent to the peers and later the hash will be generated with the peer is
+                                thats true then the data is succesfully replicated and it can go further
+    data : 'data1',
+}
+
+in the node storing the hashes with index's of the chunks
+example :
+    [{hash:hash1,index:1},{hash:hash2,index:2},{hash:hash3,index:3}]
+
+    in this way the hashes are stored in the system
+
+    in the meta data of the block the hashes and its merkle root is stored for verification of the data
+
+
+-> firstly the file data is chunked to n pieces
+-> n pieces will have index and their own hash
+-> the data is transfer to the peers in this format
+    data = {
+        index : 1,
+        data : 'data1',
+    }
+-> when the transfering is successful and the signal is recieved then the node will hash and checks
+    if that is smae with the original hash
+    note : original hash is not share over the network
+-> if the hash is same then the node will store the hash and the index of the chunk and the data is stored in the node
+-> if the hash is not same then the node will request the data again from the peer
+
+-> this merkel tree is generated and root and the hashes are sent to the staker for verification of the data
+    -> the staker then requests the data from all the nodes for for that hashes
+    -> then the hashes are sent to the staker
+    -> the staker then verifies the data and if the data is verified then the staker will send the signal to the node
+    -> and the meta data will be broadcasted to the network / added to the blockchain
+
+    -> if the data is not verified then the staker will send the signal to the node and the node will request the data again from the peers
