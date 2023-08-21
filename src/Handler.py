@@ -1,7 +1,7 @@
 import asyncio
 PEERS = ['192.168.159.77']
 
-class Handle:
+class HandleSelf:
     def __init__(self,data,reader,writer):
         self.data = data
         self.reader = reader
@@ -25,15 +25,15 @@ class Handle:
 
     # if user want to upload the file
     async def handle_upload(self):
-        return 'handeled_upload'
-        # chunk the self.data['file'] and send it to the other peers
-        # chunking = [self.data['file'][i:i+1024] for i in range(0,len(self.data['file']),1024)]
-        # tasks = [self.send_file(PEERS[i], chunk) for i, chunk in enumerate(chunking)]
-        # responses = await asyncio.gather(*tasks)
-        # print(responses)
-        # return responses
-
-
+        pass
+        # Chunking the file
+        # send the chunking to the other peers
+        # wait for their response
+        # i.e the data the is uploaded need to match with the hash of chunk
+        # if the hash of the chunk is matched with the hash of the data
+            # response is true
+        # else
+            # response is false
 
 
     # if user want to download the file
@@ -43,3 +43,6 @@ class Handle:
         # if they have the file, they will send it to you
         # if they don't have the file, they will send you a message that they don't have the file
 
+
+class HandleIncoming:
+    pass
