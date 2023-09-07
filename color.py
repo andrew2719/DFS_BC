@@ -1,4 +1,4 @@
-# colors
+# color codes
 
 class Color:
     red = '\033[31m'
