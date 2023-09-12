@@ -15,7 +15,7 @@ except ValueError:
 window = tk.Tk()
 browse = BrowseWindow(window, number_of_files)
 files_list = browse.return_files()
-window.mainloop()
+window.mainloop() # infinite loop to keep the window open
 print()
 print("Selected files:")
 print(f"*files_list", sep="\n")
