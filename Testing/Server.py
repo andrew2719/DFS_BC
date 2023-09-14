@@ -21,8 +21,8 @@ class Server:
         if dict_data['type'] == 'self-upload':
 
             #creating a handler object that can send the data to the handler
-            # the handler will handle the request and return the response
-            # the response is the list of the responses from the peers
+            #the handler will handle the request and return the response
+            #the response is the list of the responses from the peers
 
             handler = HandleSelf(dict_data,reader,writer)
             response = await handler.handle()

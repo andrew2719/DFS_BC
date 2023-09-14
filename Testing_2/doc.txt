@@ -1,0 +1,28 @@
+specifications:
+PORT -> defines the port on which the server will listen for incoming connections
+example : 8888
+
+HOST -> defines the host on which the server will listen for incoming connections
+example : 10.10.3.4
+
+inbound:
+    -> it is nothing but the server which will listen for incoming connections
+    -> it will be a TCP server(socket) which will listen for incoming connections
+    -> uses the start_server() in asyncio to start the server
+
+    -> it will recieve when any of the node tries to send some message to it
+    -> types of data recieving
+        -> simple verification
+        -> data to be stored(chunked file)
+    -> it might respond back simple verification or it might store the data too (file that is distributed across the network)
+
+outbound:
+    -> it is the client which will try to connect to the server of the other node to send the data
+    -> it will be a TCP client(socket) which will try to connect to the server of the other node
+    -> uses the open_connection() in asyncio to connect to the server of the other node
+
+    -> it will send the data to the other node
+    -> types of data sending
+        -> simple verification
+        -> data to be stored(chunked file)
+    -> it might recieve the response back from the other node(like success or failure)
