@@ -15,15 +15,20 @@ class Node:
                 break
             message = data.decode()
             print(f"Received: {message} from {addr}")
-            response = f"Echo from {self.port}: {message}"
+            response = input("Enter message: ")
+
+            response = f"Echo from {self.port}: {response}"
             writer.write(response.encode())
+            print(f"Sent: {response} to {addr}")
             await writer.drain()
 
     async def initiate_outbound(self, ip, port=8888):
         reader, writer = await asyncio.open_connection(ip, port)
         while True:
-            message = f"Hello from {self.port}"
+            message = input("Enter message: ")
+            message = f'{self.port}: {message}'
             writer.write(message.encode())
+            print(f"Sent: {message} to {ip}:{port}")
             await writer.drain()
             data = await reader.read(100)
             print(f"Received: {data.decode()} from {ip}:{port}")
@@ -42,7 +47,7 @@ class Node:
         await server.serve_forever()
 
 async def main():
-    node = Node(8888, ['10.10.5.148'])
+    node = Node(8888, ['172.21.5.27'])
     await node.start()
 
 asyncio.run(main())
