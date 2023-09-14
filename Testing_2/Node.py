@@ -7,15 +7,17 @@ class Node:
         self.connections = []
 
     async def handle_inbound(self, reader, writer):
+        print("handle_inbound opened")
         addr = writer.get_extra_info('peername')
         print(f"Connected to {addr}")
         while True:
+            print("waiting for data in handle_inbound")
             data = await reader.read(100)
             if not data:
                 break
             message = data.decode()
-            print(f"Received: {message} from {addr}")
-            response = input("Enter message: ")
+            print(f"Received in inbound: {message} from {addr}")
+            response = input("Enter message in inbound: ")
 
             response = f"Echo from {self.port}: {response}"
             writer.write(response.encode())
@@ -23,15 +25,16 @@ class Node:
             await writer.drain()
 
     async def initiate_outbound(self, ip, port=8888):
+        print("initiate_outbound opened")
         reader, writer = await asyncio.open_connection(ip, port)
         while True:
-            message = input("Enter message: ")
+            message = input("Enter message in outbound: ")
             message = f'{self.port}: {message}'
             writer.write(message.encode())
             print(f"Sent: {message} to {ip}:{port}")
             await writer.drain()
             data = await reader.read(100)
-            print(f"Received: {data.decode()} from {ip}:{port}")
+            print(f"Received in outbound: {data.decode()} from {ip}:{port}")
 
     async def start(self):
         # This will start our server to listen for inbound connections
@@ -47,7 +50,7 @@ class Node:
         await server.serve_forever()
 
 async def main():
-    node = Node(8888, ['172.21.5.27'])
+    node = Node(8888, ['172.21.10.37'])
     await node.start()
 
 asyncio.run(main())
