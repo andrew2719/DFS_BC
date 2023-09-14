@@ -17,9 +17,9 @@ class Node:
                 break
             message = data.decode()
             print(f"Received in inbound: {message} from {addr}")
-            response = input("Enter message in inbound: ")
+            response = input("reply message in inbound: ")
 
-            response = f"Echo from {self.port}: {response}"
+            response = f"response from inbound {self.port}: {response}"
             writer.write(response.encode())
             print(f"Sent: {response} to {addr}")
             await writer.drain()
@@ -27,11 +27,12 @@ class Node:
     async def initiate_outbound(self, ip, port=8888):
         print("initiate_outbound opened")
         reader, writer = await asyncio.open_connection(ip, port)
+        print("outbound connected to",ip,":",port)
         while True:
             message = input("Enter message in outbound: ")
             message = f'{self.port}: {message}'
             writer.write(message.encode())
-            print(f"Sent: {message} to {ip}:{port}")
+            print(f"Sent from outbound: {message} to {ip}:{port}")
             await writer.drain()
             data = await reader.read(100)
             print(f"Received in outbound: {data.decode()} from {ip}:{port}")
