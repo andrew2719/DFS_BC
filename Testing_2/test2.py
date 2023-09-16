@@ -6,8 +6,6 @@ class Node:
         self.peers = peers
         self.peer_connections = {}  # To store connection objects for peers
 
-    async def connections(self):
-        return self.peer_connections
     async def handle_inbound(self, reader, writer):
         # This will handle data received from other nodes
         data = await reader.read(100)
