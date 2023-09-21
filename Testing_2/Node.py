@@ -1,30 +1,62 @@
 import asyncio
+import aiofiles
+import os
+import json
+from collections import defaultdict
 
 class Node:
-    def __init__(self, port, peers=[]):
+    def __init__(self, port, peers=[], save_path='./received_files'):
         self.port = port
         self.peers = peers
         self.peer_connections = {}  # To store connection objects for peers
+        self.files = {}  # {IP: file_path}
+        self.save_path = save_path
+        if not os.path.exists(save_path):
+            os.makedirs(save_path)
+
 
     async def connections(self):
         return self.peer_connections
     async def handle_inbound(self, reader, writer):
-        # This will handle data received from other nodes
-        data = await reader.read(100)
-        print(f"Node {self.port} received: {data.decode()}")
+        addr = writer.get_extra_info('peername')[0]
+        print(f"Node {self.port} received connection from {addr}")
 
-        # You can further process data here and use self.peer_connections to send data to peers
-        verified_result = await self.send_data_to_peers(data.decode())
-        print("verified_result : ",verified_result)
+        file_info = await reader.read(1024)
+        file_info = json.loads(file_info.decode('utf-8'))
 
-        if verified_result:
-            writer.write("verified".encode())
-            await writer.drain()
+        print(file_info)
 
-        else:
-            writer.write("not verified".encode())
-            await writer.drain()
+        file_name = file_info['file_name']
+        file_size = file_info['file_size']
 
+        # Create a 'received_files' directory if it doesn't exist
+        if not os.path.exists('received_files'):
+            os.mkdir('received_files')
+
+        # Write the incoming file data to a new file
+        size = 0
+        async with aiofiles.open(f'received_files/{file_name}', 'wb') as f:
+            while size < file_size:
+                chunk = await reader.read(1024)
+                print(f"chunk: {chunk} , len: {len(chunk)}")
+                size += len(chunk)
+
+                if size > file_size:
+                    print("Received more data than expected, breaking.")
+                    break
+
+                if size == file_size or chunk == b'':
+                    print("End of file, breaking.")
+                    await f.write(chunk)
+                    break
+                else:
+                    await f.write(chunk)
+
+        # Send a JSON acknowledgment
+        ack_data = {"status": "success", "detail": "File received successfully"}
+        writer.write(json.dumps(ack_data).encode('utf-8'))
+        await writer.drain()
+        writer.close()
 
     async def send_data_to_peers(self, data):
         # This will send data to all connected peers
@@ -34,8 +66,8 @@ class Node:
     #         send them to verification
             writer.write(data.encode())
             await writer.drain()
-
-            verification_result.append(await self.verification(reader,writer))
+            result = [peer_ip,await self.verification(reader,writer)]
+            verification_result.append(result)
 
         print(verification_result)
         return verification_result
@@ -70,4 +102,5 @@ async def main():
     node = Node(8888, ['172.21.10.37', '172.21.10.38'])
     await node.start()
 
-asyncio.run(main())
+if __name__ == '__main__':
+    asyncio.run(main())

@@ -26,3 +26,17 @@ outbound:
         -> simple verification
         -> data to be stored(chunked file)
     -> it might recieve the response back from the other node(like success or failure)
+
+
+------------------------------------------------------------------------------------------------------------------------
+
+# process of how the file and the consensus is handled.
+
+-> consider a clinet node uploads a file. the system itself chunks the data and make a index table for which node which data is beeing sent to
+-> then after that each node will be sent the chunked file to the peer(outbound transfer).
+-> then the after storing after the whole communication and the file will be locked in that system using the cryprography
+-> after everything is done when the system got whole responses back stating that every file is transfered to other nodes then...
+    this table also traversed over the network for full verification by the node in the network
+-> once everything is done the meta data is sent to the staker
+-> the staker will that meta data to the blockchain
+-> this way whole network will be updated with the new file and the new file will be available to the network.
