@@ -3,6 +3,8 @@ import aiofiles
 import os
 import json
 import Handler
+import PeerHandler
+from chunker import Chunker
 import hashlib
 
 class Node:
@@ -25,6 +27,14 @@ class Node:
         handler = Handler.Handle(file_info,reader,writer)
         file_obj = await handler.HandleUpload()
 
+        '''
+        file_obj -
+        .file_name
+        .file_size
+        .data
+        .hasher
+        '''
+
         return file_obj # this contains the data and the hash of the file
 
     async def handle_inbound(self, reader, writer):
@@ -40,12 +50,11 @@ class Node:
             file_obj = await self.handle_UPLOAD(reader, writer, file_info)
 
             if file_info["NODE"] == "SELF":
-                # we need to send them to the peers
-                # with some procedures
+                peer_handler = PeerHandler.PeerHandler(self.peer_connections,file_obj)
+                response = await peer_handler.UploadToPeers()
                 pass
 
             else:
-                print(file_obj.hasher.hexdigest())
                 ack_data = {
                                 "status": "success",
                                 "detail": "File received successfully",
@@ -57,23 +66,8 @@ class Node:
 
                 await self.save_file_object_to_disk(file_obj, self.save_path,addr)
 
-    async def send_to_peer(self, peer_ip, file_obj):
-        reader, writer = self.peer_connections[peer_ip]
-        file_info = json.dumps({"REQUEST": "UPLOAD",
-                                "NODE":"NODE",
-                                "file_name": file_obj.file_name,
-                                "file_size": file_obj.file_size})
-        writer.write(file_info.encode('utf-8')) # Send file info at first
-
-        await writer.drain()
-
-    async def send_to_all_peers(self, file_obj):
-        tasks = []
-        for peer_ip in self.peer_connections.keys():
-            task = asyncio.create_task(self.send_to_peer(peer_ip, file_obj))
-            tasks.append(task)
-
-        await asyncio.gather(*tasks)
+        elif file_info["REQUEST"] == "DOWNLOAD":
+            pass
 
 
     async def connect_to_peer(self, peer_ip, port=8888):
