@@ -1,0 +1,34 @@
+# async def handle_UPLOAD(self, reader, writer,file_info):
+    #     print(file_info)
+    #
+    #     file_name = file_info['file_name']
+    #     file_size = file_info['file_size']
+    #
+    #     # Create a 'received_files' directory if it doesn't exist
+    #     if not os.path.exists('received_files'):
+    #         os.mkdir('received_files')
+    #
+    #     # Write the incoming file data to a new file
+    #     size = 0
+    #     async with aiofiles.open(f'received_files/{file_name}', 'wb') as f:
+    #         while size < file_size:
+    #             chunk = await reader.read(1024)
+    #             print(f"chunk: {chunk} , len: {len(chunk)}")
+    #             size += len(chunk)
+    #
+    #             if size > file_size:
+    #                 print("Received more data than expected, breaking.")
+    #                 break
+    #
+    #             if size == file_size or chunk == b'':
+    #                 print("End of file, breaking.")
+    #                 await f.write(chunk)
+    #                 break
+    #             else:
+    #                 await f.write(chunk)
+    #
+    #     # Send a JSON acknowledgment
+    #     ack_data = {"status": "success", "detail": "File received successfully"}
+    #     writer.write(json.dumps(ack_data).encode('utf-8'))
+    #     await writer.drain()
+    #     writer.close()
