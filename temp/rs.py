@@ -1,17 +1,13 @@
 import numpy as np
 
-# read file and store in data
-fp = open(r"sample.txt", "r")
-data = fp.read()
-# print(data)
-fp.close()
+with open(r"sample.txt", "r") as fp:
+    data = fp.read()
 
-# split words and letters in data and store in data_matrix
-data_matrix =  [list(word) for word in data.split()]
-# print(data_matrix)
+words = data.split()
+letters = [list(word) for word in words]
+ords = [[ord(letter) for letter in word] for word in words]
+ords = np.array(ords,dtype=int)
 
-# convert data_matrix to ord values
-data_matrix = [[ord(letter) for letter in word] for word in data_matrix]
-print(data_matrix)
+print(ords)
 
-# estinmate failure rate 
+
