@@ -23,7 +23,7 @@ class Server:
         await writer.drain()
 
         request = await reader.read(1024)
-        handler = HD.Handler(reader, writer, request)
+
 
     async def start_server(self):
         server = await asyncio.start_server(self.handle_inbound, '0.0.0.0', self.port)
