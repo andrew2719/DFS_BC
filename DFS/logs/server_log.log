@@ -1,3 +1,0 @@
-2023-09-28 12:14:45,226 - INFO - Started server on port 8888
-2023-09-28 12:14:45,227 - INFO - Started connecting to peers
-2023-09-28 12:15:06,255 - ERROR - Error connecting to 10.10.2.113:8888. Error: [WinError 121] The semaphore timeout period has expired
