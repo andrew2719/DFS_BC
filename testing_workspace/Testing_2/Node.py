@@ -4,8 +4,7 @@ import os
 import json
 import Handler
 import PeerHandler
-from chunker import Chunker
-import hashlib
+
 
 class Node:
     def __init__(self, port, peers=[], save_path='./received_files'):
@@ -24,7 +23,7 @@ class Node:
 
     async def handle_UPLOAD(self, reader, writer, file_info):
 
-        handler = Handler.Handle(file_info,reader,writer)
+        handler = Handler.Handle(file_info, reader, writer)
         file_obj = await handler.HandleUpload()
 
         '''
@@ -50,7 +49,7 @@ class Node:
             file_obj = await self.handle_UPLOAD(reader, writer, file_info)
 
             if file_info["NODE"] == "SELF":
-                peer_handler = PeerHandler.PeerHandler(self.peer_connections,file_obj)
+                peer_handler = PeerHandler.PeerHandler(self.peer_connections, file_obj)
                 response = await peer_handler.UploadToPeers()
                 pass
 
