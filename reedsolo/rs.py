@@ -16,11 +16,8 @@ print("Encoded Data:", encoded_data)
 
 # Simulate some errors in the encoded data (this is just for demonstration purposes).
 corrupted_data = bytearray(encoded_data)
+corrupted_data[5] = 0  # Introducing an error by modifying a byte.
 print("Corrupted Data:", corrupted_data)
-corrupted_data = str(corrupted_data)
-print("Corrupted Data:", corrupted_data)
-# corrupted_data[5] = 0  # Introducing an error by modifying a byte.
-# print("Corrupted Data:", corrupted_data)
 
 # Attempt to decode and correct the corrupted data.
 try:
